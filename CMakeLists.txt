@@ -27,6 +27,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CTest)
 endif()
 
+set(OPENSSL_INCLUDE_DIR "$ENV{HOME}/webrtc-m94/src/third_party/boringssl/src/include/")
+set(OPENSSL_FOUND TRUE)
+
 add_definitions(
     # These will force ASIO to compile without Boost
     -DBOOST_DATE_TIME_NO_LIB
@@ -71,6 +74,7 @@ target_include_directories(sioclient
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     PRIVATE
     ${MODULE_INCLUDE_DIRS}
+    ${OPENSSL_INCLUDE_DIR}
 )
 
 set_property(TARGET sioclient PROPERTY CXX_STANDARD 11)
@@ -81,12 +85,13 @@ if(BUILD_SHARED_LIBS)
         PROPERTIES
         SOVERSION ${PROJECT_VERSION_MAJOR}
         VERSION ${PROJECT_VERSION}
+        ${OPENSSL_INCLUDE_DIR}
     )
 endif()
 
 list(APPEND TARGET_LIBRARIES sioclient)
 
-find_package(OpenSSL)
+# find_package(OpenSSL)
 
 if(OPENSSL_FOUND)
     add_library(sioclient_tls ${ALL_SRC})
@@ -101,7 +106,7 @@ if(OPENSSL_FOUND)
     set_property(TARGET sioclient_tls PROPERTY CXX_STANDARD 11)
     set_property(TARGET sioclient_tls PROPERTY CXX_STANDARD_REQUIRED ON)
 
-    target_link_libraries(sioclient_tls PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+    # target_link_libraries(sioclient_tls PRIVATE OpenSSL::SSL OpenSSL::Crypto)
     if (NOT USE_SUBMODULES) 
         target_link_libraries(sioclient_tls PRIVATE websocketpp::websocketpp asio asio::asio rapidjson)
     endif()
