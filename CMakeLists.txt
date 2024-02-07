@@ -27,7 +27,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CTest)
 endif()
 
-set(OPENSSL_INCLUDE_DIR "$ENV{HOME}/webrtc-m94/src/third_party/boringssl/src/include/")
+if(NOT OPENSSL_INCLUDE_DIR)
+    message(FATAL_ERROR "OPENSSL_INCLUDE_DIR is not set")
+endif()
 set(OPENSSL_FOUND TRUE)
 
 add_definitions(
